@@ -1,0 +1,629 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+    <title>Document</title>
+
+    <!-- jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"
+        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <!-- Fomantic UI -->
+    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.8/dist/semantic.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.8/dist/semantic.min.js"></script>
+</head>
+
+<body>
+
+
+    <!-- <style>
+        @media only screen and (max-width: 767px) {
+
+            [class*="mobile hidden"],
+            [class*="tablet only"]:not(.mobile),
+            [class*="computer only"]:not(.mobile),
+            [class*="large monitor only"]:not(.mobile),
+            [class*="widescreen monitor only"]:not(.mobile),
+            [class*="or lower hidden"] {
+                display: none !important;
+            }
+        }
+
+        @media only screen and (min-width: 768px) {
+
+            [class*="mobile only"]:not(.tablet),
+            [class*="mobile only"]:not(.tablet),
+            [class*="mobile only"]:not(.tablet),
+            [class*="mobile only"]:not(.tablet) {
+                display: none !important;
+            }
+        }
+    </style> -->
+    <style>
+
+
+    </style>
+
+
+    <div class="ui container" style="padding-top: 1em;">
+
+        <h1>J Dash</h1>
+        <hr style="margin-bottom: 2em;">
+
+        <!-- TODO: custom click link -->
+        <div class="ui grid">
+
+            <!-- Mobile & computer section -->
+            <!-- Dashboard -->
+            <div class="row">
+                <div class="eight wide computer sixteen wide tablet sixteen wide mobile column">
+
+                    <div class="ui piled segments" style="padding: 1em; width: 100%;">
+                        <div class="ui segment">
+                            <!--
+                            <p style="text-align: right; margin: 0; font-size: 1.2em;" id="display_studentId">
+                            </p>
+                            -->
+                            <p style="margin: 0; font-size: 1.2em;">
+                                おかえり、
+                                <span style="font-size: 1.5em;" id="display_username"></span>
+                                さん！
+                            </p>
+
+                            <p style="margin: 0; font-size: 1.2em;" id="">
+                                TODO: 未読お知らせ
+                            </p>
+
+                            <p style="text-align: right;">
+                                <a id="btn_linkToJport" href="#" target="_blank" rel="noopener noreferrer">
+                                    <button class="ui button secondary disabled">
+                                        J-Portへ
+                                    </button></a>
+
+                            </p>
+
+                        </div>
+                    </div>
+
+                </div>
+                <div class="eight wide computer sixteen wide tablet sixteen wide mobile column">
+
+                    TODO: 出席コード入力
+                    <br>
+                    TODO: Bus timetable
+
+
+                </div>
+            </div>
+
+
+
+
+
+
+
+            <!-- Mobile section -->
+            <!-- Time table -->
+            <div class="row tablet mobile only">
+                <div class="sixteen wide column">
+                    <h2 id="mobileTimetableTitle"></h2>
+                    <hr>
+                </div>
+
+                <div class="sixteen wide column" id="mobileTimetable">
+                    <!-- Lecture info will be filled here -->
+                </div>
+            </div>
+
+
+
+            <!-- Computer section -->
+            <!-- Time table -->
+            <div class="row computer only">
+                <div class="column"></div>
+                <div class="column"></div>
+            </div>
+
+            <div class="row computer only">
+                <table id="PCTimeTable" class="ui definition table celled fixed">
+                    <thead>
+                        <tr class="center aligned">
+                            <th style="width: 5%"></th>
+                            <th>一限<br>09:15 ~ 10:45</th>
+                            <th>二限<br>10:55 ~ 12:25</th>
+                            <th>三限<br>13:10 ~ 14:40</th>
+                            <th>四限<br>14:50 ~ 16:20</th>
+                            <th>五限<br>16:30 ~ 18:00</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td height="100px" width="5%" class="center aligned">月</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td height="100px" width="5%" class="center aligned">火</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td height="100px" width="5%" class="center aligned">水</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td height="100px" width="5%" class="center aligned">木</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td height="100px" width="5%" class="center aligned">金</td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        </tr>
+
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+
+
+
+
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+    <!-- First use login modal -->
+    <div id="loginModal" class="ui modal">
+        <div class="center aligned header">初回登録</div>
+
+        <div class="center aligned content">
+            <div class="ui grid centered">
+                <div class="center aligned sixteen wide mobile eight wide tablet four wide computer column">
+
+                    <div class="ui form">
+                        <div class="field">
+                            <label>User ID</label>
+                            <input id="loginUsername" type="text" placeholder="jxxxxxaa">
+                        </div>
+                        <div class="field">
+                            <label>Password</label>
+                            <input id="loginPassword" type="password" placeholder="password">
+                        </div>
+                        <button class="ui button primary" id="loginButton">Login</button>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+        <!--         
+        <div class="center aligned actions">
+            <div class="ui negative button">Cancel</div>
+            <div class="ui positive button">OK</div>
+        </div>
+        -->
+
+    </div>
+
+
+
+
+    <script>
+        let loginData;
+
+        $(document).ready(function () {
+
+            /*****************
+             * Event listener
+             */
+            $('#loginPassword').on('keyup', function (e) {
+                if (e.keyCode === 13) {
+                    $('#loginButton').click();
+                }
+            });
+
+            $('#loginButton').click(() => {
+                const username = $('#loginUsername').val();
+                const password = $('#loginPassword').val();
+
+                // Empty input
+                if (username.length == 0 || password.length == 0) {
+                    $('body').toast({
+                        class: 'error',
+                        message: `ユーザーIDとパスワードを入力してください。`,
+                    });
+                    return;
+                }
+
+
+                // Get encrypted password
+                $.ajax({
+                    url: '/api/login',
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    data: JSON.stringify({
+                        username: username,
+                        password: password,
+                        URIEncode: true
+                    }),
+
+                    success: function (data) {
+                        if (!data) {
+                            $('body').toast({
+                                class: 'error',
+                                message: `ユーザーIDまたはパスワードが間違っています。`,
+                            });
+                            return;
+                        }
+
+                        COOKIE.SetLoginData(username, data.encryptedPassword, data);
+                        $('#loginModal').modal('hide');
+
+                        loginData = COOKIE.ToJSON();
+                        Init();
+                    },
+                })
+            });
+
+
+
+
+
+            /*****************
+             * User info Init.
+             */
+            let cookie = document.cookie;
+
+            // First use
+            if (cookie.indexOf("username=") == -1 || cookie.indexOf("password=") == -1) {
+                // Show login modal
+                $('#loginModal')
+                    .modal({ closable: false })
+                    .modal('show');
+            }
+
+            // parse login data from cache
+            else {
+                loginData = COOKIE.ToJSON();
+                Init();
+            }
+        });
+
+
+
+        function Init() {
+
+            // Update Cookie expiration
+            COOKIE.UpdateExpires();
+
+            
+            DisplayUserInfo();
+
+            $.ajax({
+                url: '/api/schedule',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                data: JSON.stringify({
+                    username: loginData.username,
+                    password: loginData.password,
+                }),
+
+                success: function (data) {
+                    if (!data) {
+                        $('body').toast({
+                            class: 'error',
+                            message: `ユーザーIDまたはパスワードが間違っています。`,
+                        });
+                        return;
+                    }
+
+                    // Set schedule
+                    setPCTimetableTitle(data.term + '<br>' + data.termDisplayName);
+                    clearPCTimetable();
+                    PCAddLectureList(data.schedule);
+
+                    setMobileTimetableTitle(data.term + ' / ' + data.termDisplayName);
+                    clearMobileTimetable();
+                    MobileAddLectureList(data.schedule);
+                },
+            });
+
+            // $.ajax({
+            //     url: '/api/lectureStatus',
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //     },
+            //     data: JSON.stringify({
+            //         username: loginData.username,
+            //         password: loginData.password,
+            //     }),
+
+            //     success: function (data) {
+            //         if (!data) {
+            //             $('body').toast({
+            //                 class: 'error',
+            //                 message: `ユーザーIDまたはパスワードが間違っています。`,
+            //             });
+            //             return;
+            //         }
+
+            //         $('#lectureStatus').text(JSON.stringify(data, null, 2));
+            //     },
+            // });
+
+            $.ajax({
+                url: '/api/homeUrl',
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                data: JSON.stringify({
+                    username: loginData.username,
+                    password: loginData.password,
+                }),
+
+                success: function (data) {
+                    if (!data) {
+                        $('body').toast({
+                            class: 'error',
+                            message: `ユーザーIDまたはパスワードが間違っています。`,
+                        });
+                        return;
+                    }
+
+                    $('#btn_linkToJport').attr('href', data);
+                    $('#btn_linkToJport > button').removeClass('disabled');
+                },
+            });
+
+
+        }
+
+
+
+        /*****************
+         * Display utils
+         */
+
+        function DisplayUserInfo() {
+            $('#display_username').text(loginData.origin.name);
+            // $('#display_studentId').text(loginData.origin.gaksekiCd);
+
+        }
+
+
+
+
+
+        /*****************
+         * Timetable utils
+         */
+
+        /* Mobile */
+        function clearMobileTimetable() {
+            $('#mobileTimetable').empty();
+        }
+
+        function setMobileTimetableTitle(title) {
+            $('#mobileTimetableTitle').html(title);
+        }
+
+        function MobileAddLectureList(lectureList) {
+
+            let day = ['月曜日', '火曜日', '水曜日', '木曜日', '金曜日'];
+            let lectureTime = {
+                1: {
+                    start: "09:15",
+                    end: "10:45"
+                },
+                2: {
+                    start: "10:55",
+                    end: "12:25"
+                },
+                3: {
+                    start: "13:10",
+                    end: "14:40"
+                },
+                4: {
+                    start: "14:50",
+                    end: "16:20"
+                },
+                5: {
+                    start: "16:30",
+                    end: "18:00"
+                }
+            }
+
+            let sorted = {};
+            for (const lecture of lectureList) {
+                if (!sorted[lecture.kaikoYobi]) {
+                    sorted[lecture.kaikoYobi] = [lecture];
+                } else {
+                    sorted[lecture.kaikoYobi].push(lecture);
+                }
+            }
+
+            let html = '';
+
+            for (const key in sorted) {
+
+                if (key == 0) {
+                    // TODO: syuu cyuu kou gi
+                    continue;
+                }
+
+                html += `<h3 style="color: gray;">${day[key - 1]}</h3>`;
+                html += '<div class="ui segments">';
+
+                for (const lecture of sorted[key]) {
+                    let segment = '';
+
+                    segment += '<div class="ui segment">';
+                    segment += '<div class="ui two column grid middle aligned">';
+                    segment += '<div class="row">';
+
+                    segment += '<div class="column">';
+                    segment += `<p style="margin: 0;">${lecture.jugyoName}</p>`;
+                    segment += `<p style="margin: 0; color: gray">${lecture.kyostName}</p>`;
+                    segment += '</div>';
+
+                    segment += '<div class="column right aligned">';
+                    segment +=
+                        `<div
+                            style="display: inline; color: white; background-color: rgb(0, 69, 58); padding: 5px 10px;">
+                            ${lectureTime[lecture.jigenNo].start}
+                        </div>
+                        <div
+                            style="display: inline; color: white; background-color: rgb(3, 117, 98); padding: 5px 10px;">
+                            ${lectureTime[lecture.jigenNo].end}
+                        </div>
+                        `;
+                    segment += '</div>';
+
+
+                    segment += '</div>';
+                    segment += '</div>';
+                    segment += '</div>';
+
+                    html += segment;
+
+
+                }
+
+                html += '</div>';
+
+                $('#mobileTimetable').html(html);
+            }
+        }
+
+
+        /* PC */
+        function setPCTimetableTitle(title) {
+            $('#PCTimeTable > thead > tr > th:nth-child(1)').html(title);
+        }
+
+        function clearPCTimetable() {
+            let rows = $('#PCTimeTable > tbody > tr');
+
+            for (let row of rows) {
+                let cols = row.children;
+
+                for (let i = 1; i < cols.length; i++) {
+                    cols[i].innerText = '';
+                }
+            }
+        }
+
+        function PCAddLectureList(lectureList) {
+            for (const lecture of lectureList) {
+                PCAddLecture(lecture);
+            }
+        }
+
+        function PCAddLecture(lecture) {
+            const lectureName = lecture.jugyoName;
+            const day = lecture.kaikoYobi;
+            const period = lecture.jigenNo;
+
+            const teacherName = lecture.kyoinName;
+            const lectureRoom = lecture.kyostName;
+
+            const unreadNotification = lecture.keijiMidokCnt;
+
+            if (day == 0 && period == 0) {
+                // TODO: syuu cyuu kou gi
+            }
+            else {
+                $(`#PCTimeTable > tbody > tr:nth-child(${period + 1}) > td:nth-child(${day + 1})`)
+                    .html(
+                        `<p style="margin: 0; font-weight: bold">${lectureName}</p>
+                        <p style="margin: 0; text-align: right; color: gray">${teacherName}</p>
+                        <p style="margin: 0; text-align: right; color: gray">${lectureRoom}</p>
+                        `);
+                // <span class="ui label">${unreadNotification}</span>
+            }
+
+        }
+
+
+
+        /*****************
+         * Cookie utils
+         */
+        const COOKIE = {
+            ToJSON: function () {
+                let cookie = document.cookie;
+                let res = {};
+
+                cookie.split(/\s*;\s*/).forEach(function (pair) {
+                    pair = pair.split(/\s*=\s*/);
+                    res[pair[0]] = pair.splice(1).join('=');
+                });
+
+                res.origin = JSON.parse(decodeURIComponent(res.origin));
+                return res;
+            },
+
+            SetLoginData: function (username, password, origin) {
+                let expires = new Date();
+                expires.setTime(expires.getTime() + (10 * 24 * 60 * 60 * 1000));
+
+                document.cookie = `username=${username}; expires=${expires.toUTCString()}; path=/;`;
+                document.cookie = `password=${password}; expires=${expires.toUTCString()}; path=/;`;
+                document.cookie = `origin=${encodeURIComponent(JSON.stringify(origin))}; expires=${expires.toUTCString()}; path=/;`;
+            },
+
+            UpdateExpires: function () {
+                let expires = new Date();
+                expires.setTime(expires.getTime() + (10 * 24 * 60 * 60 * 1000));
+
+                let cookie = COOKIE.ToJSON();
+                document.cookie = `username=${cookie.username}; expires=${expires.toUTCString()}; path=/;`;
+                document.cookie = `password=${cookie.password}; expires=${expires.toUTCString()}; path=/;`;
+                document.cookie = `origin=${encodeURIComponent(JSON.stringify(cookie.origin))}; expires=${expires.toUTCString()}; path=/;`;
+            },
+        }
+
+
+    </script>
+
+</body>
+
+</html>
