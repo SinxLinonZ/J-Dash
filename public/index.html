@@ -50,6 +50,19 @@
             Bus timetable
      -->
 
+    <style>
+        input::-webkit-outer-spin-button,
+        input::-webkit-inner-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+        }
+
+        /* Firefox */
+        input[type=number] {
+            -moz-appearance: textfield;
+        }
+    </style>
+
     <div class="ui container" style="padding-top: 1em;">
 
         <h1>J Dash</h1>
@@ -61,6 +74,7 @@
             <!-- Mobile & computer section -->
             <!-- Dashboard -->
             <div class="row">
+
                 <div class="eight wide computer sixteen wide tablet sixteen wide mobile column">
 
                     <div class="ui piled segments" style="padding: 1em; width: 100%; margin-bottom: 1em;">
@@ -84,47 +98,46 @@
                                     <button class="ui button secondary disabled">
                                         J-Portへ
                                     </button></a>
-
                             </p>
 
                         </div>
                     </div>
-
                 </div>
+
+
                 <div class="eight wide computer sixteen wide tablet sixteen wide mobile column">
-
-
                     <div class="ui card" style="width: 100%;">
+                        
                         <div class="content">
                             <div class="header">出席</div>
                         </div>
+                        
                         <div class="content">
                             <div id="attendForm" class="ui form">
-
                                 <div class="ui grid middle aligned center aligned">
                                     <div class="row" style="font-size: 2em;">
+
                                         <div class="ten wide column">
                                             <div class="field">
-                                                <input id="input_attendCode" type="text" placeholder="出席コード"
+                                                <input id="input_attendCode" type="number" placeholder="出席コード"
+                                                    oninput="javascript:if(this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
                                                     maxlength="4">
                                             </div>
                                         </div>
-                                        <div class="six wide column">
-                                            <button id="btn_attend" class="ui button secondary"
-                                                style="width: 100%; font-size: 1.1em; padding-left: .2em; padding-right: .2em;">出席</button>
 
+                                        <div class="six wide column">
+                                            <button id="btn_attend" class="ui button disabled"
+                                                style="width: 100%; font-size: 1.1em; padding-left: .2em; padding-right: .2em;">出席</button>
                                         </div>
+                                        
                                     </div>
                                 </div>
-
-
-
-
                             </div>
                         </div>
-                    </div>
 
+                    </div>
                 </div>
+
             </div>
 
 
@@ -292,6 +305,14 @@
                 if (e.keyCode === 13) {
                     $('#btn_attend').click();
                 }
+
+                if ($('#input_attendCode').val().length === 4) {
+                    $('#btn_attend').removeClass('disabled');
+                    $('#btn_attend').addClass('positive');
+                } else {
+                    $('#btn_attend').removeClass('positive');
+                    $('#btn_attend').addClass('disabled');
+                }
             });
 
             $('#input_attendCode').on('keydown', function (e) {
@@ -319,6 +340,7 @@
                 }
 
                 $('#attendForm').addClass('loading');
+                $('#btn_attend').removeClass('positive');
                 $('#btn_attend').addClass('disabled');
 
 
@@ -344,7 +366,8 @@
 
                         $('#input_attendCode').val('');
                         $('#attendForm').removeClass('loading');
-                        $('#btn_attend').removeClass('disabled');
+                        $('#btn_attend').removeClass('positive');
+                        $('#btn_attend').addClass('disabled');
                     },
 
                     error: function (data) {
@@ -354,7 +377,8 @@
                         });
 
                         $('#attendForm').removeClass('loading');
-                        $('#btn_attend').removeClass('disabled');
+                        $('#btn_attend').removeClass('positive');
+                        $('#btn_attend').addClass('disabled');
                     }
                 });
             });
