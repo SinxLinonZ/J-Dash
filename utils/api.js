@@ -3,6 +3,7 @@ require('dotenv').config();
 
 // Import libs
 const axios = require('axios');
+const { chromium } = require('playwright');
 
 module.exports = {
 
@@ -206,6 +207,36 @@ module.exports = {
         url += '?webApiLoginInfo=' + query;
 
         return url;
+    },
+
+    InputAttendCode: async function(username, password, code) {
+        const browser = await chromium.launch({
+            headless: true,
+        });
+
+        const url = await this.GetHomeUrl(username, password);
+        const page = await browser.newPage();
+        await page.goto(url);
+
+        await page.evaluate(() => {
+            // eslint-disable-next-line no-undef
+            $('#menuPanel').panel('open');
+        });
+        await page.locator('.ui-link:has-text("出席登録(スマートフォン)")').click();
+
+        const inputs = page.locator('div.mainContent input');
+
+        for (let i = 0; i < 4; i++) {
+            await inputs.nth(i).fill(code[i]);
+        }
+
+        await page.locator('button:has-text("出席登録する")').click();
+
+        await page.waitForNavigation();
+        const screenshot = (await page.screenshot()).toString('base64');
+
+        await browser.close();
+        return screenshot;
     },
 };
 

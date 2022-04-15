@@ -43,11 +43,12 @@
             }
         }
     </style> -->
-    <style>
 
-
-    </style>
-
+    <!-- 
+        TODO: 
+            出席コード入力
+            Bus timetable
+     -->
 
     <div class="ui container" style="padding-top: 1em;">
 
@@ -62,7 +63,7 @@
             <div class="row">
                 <div class="eight wide computer sixteen wide tablet sixteen wide mobile column">
 
-                    <div class="ui piled segments" style="padding: 1em; width: 100%;">
+                    <div class="ui piled segments" style="padding: 1em; width: 100%; margin-bottom: 1em;">
                         <div class="ui segment">
                             <!--
                             <p style="text-align: right; margin: 0; font-size: 1.2em;" id="display_studentId">
@@ -92,10 +93,36 @@
                 </div>
                 <div class="eight wide computer sixteen wide tablet sixteen wide mobile column">
 
-                    TODO: 出席コード入力
-                    <br>
-                    TODO: Bus timetable
 
+                    <div class="ui card" style="width: 100%;">
+                        <div class="content">
+                            <div class="header">出席</div>
+                        </div>
+                        <div class="content">
+                            <div id="attendForm" class="ui form">
+
+                                <div class="ui grid middle aligned center aligned">
+                                    <div class="row" style="font-size: 2em;">
+                                        <div class="ten wide column">
+                                            <div class="field">
+                                                <input id="input_attendCode" type="text" placeholder="出席コード"
+                                                    maxlength="4">
+                                            </div>
+                                        </div>
+                                        <div class="six wide column">
+                                            <button id="btn_attend" class="ui button secondary"
+                                                style="width: 100%; font-size: 1.1em; padding-left: .2em; padding-right: .2em;">出席</button>
+
+                                        </div>
+                                    </div>
+                                </div>
+
+
+
+
+                            </div>
+                        </div>
+                    </div>
 
                 </div>
             </div>
@@ -191,6 +218,10 @@
 
 
 
+
+
+        <div class="ui section divider" style="margin-bottom: 1em;"></div>
+        <p style="padding-bottom: 2em; text-align: right;">Powered by NetTech / NSS</p>
     </div>
 
 
@@ -198,10 +229,19 @@
 
 
 
+    <!-- Attend screenshot modal -->
+    <div id="attendResult" class="ui modal">
+        <div class="center aligned header">出席結果</div>
 
+        <div class="center aligned content">
+            <img src="" alt="出席スクリーンショット" style="max-width: 100%; cursor: zoom-in;"></img>
+        </div>
 
+        <div class="center aligned actions">
+            <div class="ui positive button">OK</div>
+        </div>
 
-
+    </div>
 
     <!-- First use login modal -->
     <div id="loginModal" class="ui modal">
@@ -248,6 +288,84 @@
             /*****************
              * Event listener
              */
+            $('#input_attendCode').on('keyup', function (e) {
+                if (e.keyCode === 13) {
+                    $('#btn_attend').click();
+                }
+            });
+
+            $('#input_attendCode').on('keydown', function (e) {
+                // only number 0-9, enter and backspace allowed
+                if ((e.keyCode < 48 || e.keyCode > 57) && e.keyCode !== 8 && e.keyCode !== 13) {
+                    e.preventDefault();
+                }
+            });
+
+            $('#btn_attend').click(() => {
+                if ($('#attendForm').hasClass('loading') || $('#btn_attend').hasClass('disabled')) {
+                    return;
+                }
+
+                const code = $('#input_attendCode').val();
+
+                if (code.length != 4) {
+                    $('body').toast({
+                        message: '出席コードは4桁で入力してください。',
+                        class: 'error',
+                        // position: 'top right',
+                        // displayTime: 3000
+                    });
+                    return;
+                }
+
+                $('#attendForm').addClass('loading');
+                $('#btn_attend').addClass('disabled');
+
+
+                $.ajax({
+                    url: '/api/attendCode',
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    data: JSON.stringify({
+                        username: loginData.username,
+                        password: loginData.password,
+                        code: code
+                    }),
+
+                    success: function (data) {
+                        let src = "data:image/png;base64, " + data;
+                        $('#attendResult img').attr('src', src);
+
+                        $('#attendResult').modal({
+                            closable: false,
+                        }).modal('show');
+
+                        $('#input_attendCode').val('');
+                        $('#attendForm').removeClass('loading');
+                        $('#btn_attend').removeClass('disabled');
+                    },
+
+                    error: function (data) {
+                        $('body').toast({
+                            message: '不明エラーです、J-Portを利用してください',
+                            class: 'error',
+                        });
+
+                        $('#attendForm').removeClass('loading');
+                        $('#btn_attend').removeClass('disabled');
+                    }
+                });
+            });
+
+            $('#attendResult img').click(() => {
+                const win = window.open();
+                win.document.write('<iframe src="' + $('#attendResult img').attr('src') + '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>');
+                win.document.close();
+            });
+
+
             $('#loginPassword').on('keyup', function (e) {
                 if (e.keyCode === 13) {
                     $('#loginButton').click();
@@ -330,7 +448,7 @@
             // Update Cookie expiration
             COOKIE.UpdateExpires();
 
-            
+
             DisplayUserInfo();
 
             $.ajax({
@@ -571,7 +689,7 @@
                 // TODO: syuu cyuu kou gi
             }
             else {
-                $(`#PCTimeTable > tbody > tr:nth-child(${period + 1}) > td:nth-child(${day + 1})`)
+                $(`#PCTimeTable > tbody > tr:nth-child(${period}) > td:nth-child(${day + 1})`)
                     .html(
                         `<p style="margin: 0; font-weight: bold">${lectureName}</p>
                         <p style="margin: 0; text-align: right; color: gray">${teacherName}</p>

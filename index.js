@@ -49,6 +49,13 @@ app.post('/api/homeUrl', async (req, res) => {
     res.send(data);
 });
 
+app.post('/api/attendCode', async (req, res) => {
+    const { username, password, code } = req.body;
+
+    const data = await api.InputAttendCode(username, password, code);
+    res.send(data);
+});
+
 app.get('/', (req, res) => {
     res.sendFile(__dirname + '/public/index.html');
 });
