@@ -18,8 +18,8 @@ app.post('/api/login', async (req, res) => {
     const { username, password, URIEncode } = req.body;
 
     const data = URIEncode
-        ? await api.LoginURI(username, password)
-        : await api.Login(username, password);
+        ? await api.GetLoginDataURI(username, password)
+        : await api.GetLoginData(username, password);
 
     res.send(data);
 });
@@ -49,16 +49,35 @@ app.post('/api/homeUrl', async (req, res) => {
     res.send(data);
 });
 
-app.post('/api/attendCode', async (req, res) => {
+app.post('/api/attendance', async (req, res) => {
     const { username, password, code } = req.body;
 
     const data = await api.InputAttendCode(username, password, code);
     res.send(data);
 });
 
-app.get('/', (req, res) => {
-    res.sendFile(__dirname + '/public/index.html');
+app.post('/api/lectureSyllabus', async (req, res) => {
+    const { username, password, lecture } = req.body;
+
+    const data = await api.GetLectureSyllabusUrl(username, password, lecture);
+    res.send(data);
 });
+
+app.post('/api/notification/url', async (req, res) => {
+    const { username, password } = req.body;
+
+    const data = await api.GetNotificationUrl(username, password);
+    res.send(data);
+});
+app.post('/api/notification/unreadCount', async (req, res) => {
+    const { username, password } = req.body;
+
+    const data = await api.GetUnreadNotificationCount(username, password);
+    res.send(data);
+});
+
+app.use(express.static('public'));
+
 
 app.listen(process.env.PORT || 3000, () => {
     console.log('Server started');

@@ -7,7 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
-    <title>Document</title>
+    <title>J-Dash</title>
 
     <!-- jQuery -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
@@ -19,6 +19,26 @@
 
 <body>
 
+
+    <!-- <div class="ui sidebar left overlay visible" id="sidebar"></div>
+    <div class="pusher"></div> -->
+
+    <!-- <div class="ui vertical inverted left visible sidebar menu">
+        <a class="item">
+            <i class="home icon"></i>
+            Home
+        </a>
+        <a class="item">
+            <i class="block layout icon"></i>
+            Topics
+        </a>
+    </div>
+    <div class="pusher">
+
+        aaa
+
+
+    </div> -->
 
     <!-- <style>
         @media only screen and (max-width: 767px) {
@@ -63,7 +83,16 @@
         }
     </style>
 
-    <div class="ui container" style="padding-top: 1em;">
+    <div id="navBar" class="ui top fixed menu">
+        <a class="item">
+            <img class="ui mini image" src="./img/logo.png">
+        </a>
+        <a class="item">AAA</a>
+        <a class="item">BBB</a>
+        <a class="item">CCC</a>
+    </div>
+
+    <div id="mainContent" class="ui container" style="padding-top: 1em;">
 
         <h1>J Dash</h1>
         <hr style="margin-bottom: 2em;">
@@ -89,15 +118,21 @@
                                 さん！
                             </p>
 
-                            <p style="margin: 0; font-size: 1.2em;" id="">
-                                TODO: 未読お知らせ
-                            </p>
+                            <div style="font-size: 1.2em; display: flex; align-items: center; margin: 5px 0" id="display_unreadNotiCnt">
+                                <div class="ui active inline loader"></div>
+                            </div>
 
                             <p style="text-align: right;">
                                 <a id="btn_linkToJport" href="#" target="_blank" rel="noopener noreferrer">
                                     <button class="ui button secondary disabled">
                                         J-Portへ
-                                    </button></a>
+                                    </button>
+                                </a>
+                                <a id="btn_linkToNotification" href="#" target="_blank" rel="noopener noreferrer">
+                                    <button class="ui button secondary disabled">
+                                        掲示板へ
+                                    </button>
+                                </a>
                             </p>
 
                         </div>
@@ -107,11 +142,11 @@
 
                 <div class="eight wide computer sixteen wide tablet sixteen wide mobile column">
                     <div class="ui card" style="width: 100%;">
-                        
+
                         <div class="content">
                             <div class="header">出席</div>
                         </div>
-                        
+
                         <div class="content">
                             <div id="attendForm" class="ui form">
                                 <div class="ui grid middle aligned center aligned">
@@ -129,7 +164,7 @@
                                             <button id="btn_attend" class="ui button disabled"
                                                 style="width: 100%; font-size: 1.1em; padding-left: .2em; padding-right: .2em;">出席</button>
                                         </div>
-                                        
+
                                     </div>
                                 </div>
                             </div>
@@ -163,11 +198,6 @@
 
             <!-- Computer section -->
             <!-- Time table -->
-            <div class="row computer only">
-                <div class="column"></div>
-                <div class="column"></div>
-            </div>
-
             <div class="row computer only">
                 <table id="PCTimeTable" class="ui definition table celled fixed">
                     <thead>
@@ -240,6 +270,19 @@
 
 
 
+    <!-- Syllabus modal -->
+    <!--
+    <div id="syllabusModal" class="ui modal">
+        <div class="center aligned header">シラバス照会</div>
+
+        <div class="center aligned content">
+        </div>
+
+        <div class="center aligned actions">
+            <div class="ui positive button">OK</div>
+        </div>
+    </div>
+    -->
 
 
     <!-- Attend screenshot modal -->
@@ -248,12 +291,12 @@
 
         <div class="center aligned content">
             <img src="" alt="出席スクリーンショット" style="max-width: 100%; cursor: zoom-in;"></img>
+            <span style="color: gray;">クリック・タッチすると拡大できます</span>
         </div>
 
         <div class="center aligned actions">
             <div class="ui positive button">OK</div>
         </div>
-
     </div>
 
     <!-- First use login modal -->
@@ -292,6 +335,9 @@
 
 
 
+    <!-- --------------------------------------------------------------------------------------- -->
+
+
 
     <script>
         let loginData;
@@ -301,6 +347,10 @@
             /*****************
              * Event listener
              */
+
+            // Attendance input
+            // enable button only when input is 4 digits
+            // shortcut Enter key to click button
             $('#input_attendCode').on('keyup', function (e) {
                 if (e.keyCode === 13) {
                     $('#btn_attend').click();
@@ -315,6 +365,8 @@
                 }
             });
 
+            // Attendance input
+            // only allowed number digit input
             $('#input_attendCode').on('keydown', function (e) {
                 // only number 0-9, enter and backspace allowed
                 if ((e.keyCode < 48 || e.keyCode > 57) && e.keyCode !== 8 && e.keyCode !== 13) {
@@ -322,6 +374,7 @@
                 }
             });
 
+            // Attendance button
             $('#btn_attend').click(() => {
                 if ($('#attendForm').hasClass('loading') || $('#btn_attend').hasClass('disabled')) {
                     return;
@@ -343,20 +396,13 @@
                 $('#btn_attend').removeClass('positive');
                 $('#btn_attend').addClass('disabled');
 
-
-                $.ajax({
-                    url: '/api/attendCode',
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    data: JSON.stringify({
+                AJAX(APIEndpoint.attendance, 'POST',
+                    {
                         username: loginData.username,
                         password: loginData.password,
                         code: code
-                    }),
-
-                    success: function (data) {
+                    },
+                    function (data) {
                         let src = "data:image/png;base64, " + data;
                         $('#attendResult img').attr('src', src);
 
@@ -369,8 +415,7 @@
                         $('#btn_attend').removeClass('positive');
                         $('#btn_attend').addClass('disabled');
                     },
-
-                    error: function (data) {
+                    function (data) {
                         $('body').toast({
                             message: '不明エラーです、J-Portを利用してください',
                             class: 'error',
@@ -380,16 +425,24 @@
                         $('#btn_attend').removeClass('positive');
                         $('#btn_attend').addClass('disabled');
                     }
-                });
+                );
+
             });
 
+            // Attendance result image
+            // open new window to display full size screenshot
             $('#attendResult img').click(() => {
                 const win = window.open();
                 win.document.write('<iframe src="' + $('#attendResult img').attr('src') + '" frameborder="0" style="border:0; top:0px; left:0px; bottom:0px; right:0px; width:100%; height:100%;" allowfullscreen></iframe>');
                 win.document.close();
             });
 
-
+            // Login input
+            $('#loginUsername').on('keyup', function (e) {
+                if (e.keyCode === 13) {
+                    $('#loginPassword').focus();
+                }
+            });
             $('#loginPassword').on('keyup', function (e) {
                 if (e.keyCode === 13) {
                     $('#loginButton').click();
@@ -411,19 +464,13 @@
 
 
                 // Get encrypted password
-                $.ajax({
-                    url: '/api/login',
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    data: JSON.stringify({
+                AJAX(APIEndpoint.login, 'POST',
+                    {
                         username: username,
                         password: password,
                         URIEncode: true
-                    }),
-
-                    success: function (data) {
+                    },
+                    function (data) {
                         if (!data) {
                             $('body').toast({
                                 class: 'error',
@@ -434,11 +481,15 @@
 
                         COOKIE.SetLoginData(username, data.encryptedPassword, data);
                         $('#loginModal').modal('hide');
-
-                        loginData = COOKIE.ToJSON();
                         Init();
                     },
-                })
+                    function (data) {
+                        $('body').toast({
+                            class: 'error',
+                            message: `不明エラーです、J-Portを利用してください`,
+                        });
+                    }
+                );
             });
 
 
@@ -446,12 +497,12 @@
 
 
             /*****************
-             * User info Init.
+             * Post check
              */
             let cookie = document.cookie;
 
             // First use
-            if (cookie.indexOf("username=") == -1 || cookie.indexOf("password=") == -1) {
+            if (cookie.indexOf("username=") == -1 || cookie.indexOf("password=") == -1 || cookie.indexOf("origin=") == -1) {
                 // Show login modal
                 $('#loginModal')
                     .modal({ closable: false })
@@ -460,7 +511,6 @@
 
             // parse login data from cache
             else {
-                loginData = COOKIE.ToJSON();
                 Init();
             }
         });
@@ -468,46 +518,20 @@
 
 
         function Init() {
-
             // Update Cookie expiration
+            loginData = COOKIE.ToJSON();
             COOKIE.UpdateExpires();
 
+            /*******
+             * UI Rendering
+             */
+            RenderUserData();
+            RenderUserDataAjax();
+            $('#mainContent').css('padding-top', ($('#navBar').height() + 10) + 'px');
 
-            DisplayUserInfo();
-
-            $.ajax({
-                url: '/api/schedule',
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                data: JSON.stringify({
-                    username: loginData.username,
-                    password: loginData.password,
-                }),
-
-                success: function (data) {
-                    if (!data) {
-                        $('body').toast({
-                            class: 'error',
-                            message: `ユーザーIDまたはパスワードが間違っています。`,
-                        });
-                        return;
-                    }
-
-                    // Set schedule
-                    setPCTimetableTitle(data.term + '<br>' + data.termDisplayName);
-                    clearPCTimetable();
-                    PCAddLectureList(data.schedule);
-
-                    setMobileTimetableTitle(data.term + ' / ' + data.termDisplayName);
-                    clearMobileTimetable();
-                    MobileAddLectureList(data.schedule);
-                },
-            });
 
             // $.ajax({
-            //     url: '/api/lectureStatus',
+            //     url: 'api/lectureStatus',
             //     method: 'POST',
             //     headers: {
             //         'Content-Type': 'application/json',
@@ -530,18 +554,82 @@
             //     },
             // });
 
+        }
+
+
+        /*****************
+         * Network utils
+         */
+        const APIEndpoint = {
+            login: 'api/login',
+            schedule: 'api/schedule',
+            lectureStatus: 'api/lectureStatus',
+            homeUrl: 'api/homeUrl',
+            attendance: 'api/attendance',
+            lectureSyllabus: 'api/lectureSyllabus',
+            notificationUrl: 'api/notification/url',
+            unreadNotificationCount: 'api/notification/unreadCount',
+        };
+
+        function AJAX(url, method, data, success, error) {
             $.ajax({
-                url: '/api/homeUrl',
-                method: 'POST',
+                url: url,
+                method: method,
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                data: JSON.stringify({
+                data: JSON.stringify(data),
+
+                success: success,
+                error: error,
+            });
+        }
+
+
+
+        /*****************
+         * Display utils
+         */
+
+        function RenderUserData() {
+            $('#display_username').text(loginData.origin.name);
+            // $('#display_studentId').text(loginData.origin.gaksekiCd);
+        }
+
+        function RenderUserDataAjax() {
+            // Get schedule data & render
+            AJAX(APIEndpoint.schedule, 'POST',
+                {
                     username: loginData.username,
                     password: loginData.password,
-                }),
+                },
+                function (data) {
+                    if (!data) {
+                        $('body').toast({
+                            class: 'error',
+                            message: `ユーザーIDまたはパスワードが間違っています。`,
+                        });
+                        return;
+                    }
 
-                success: function (data) {
+                    // Set schedule
+                    setPCTimetableTitle(data.term + '<br>' + data.termDisplayName);
+                    clearPCTimetable();
+                    PCAddLectureList(data.schedule);
+
+                    setMobileTimetableTitle(data.term + ' / ' + data.termDisplayName);
+                    clearMobileTimetable();
+                    MobileAddLectureList(data.schedule);
+                },
+            );
+
+            // Init external link button
+            AJAX(APIEndpoint.homeUrl, 'POST',
+                {
+                    username: loginData.username,
+                    password: loginData.password,
+                },
+                function (data) {
                     if (!data) {
                         $('body').toast({
                             class: 'error',
@@ -552,22 +640,43 @@
 
                     $('#btn_linkToJport').attr('href', data);
                     $('#btn_linkToJport > button').removeClass('disabled');
+                }
+            );
+            AJAX(APIEndpoint.notificationUrl, 'POST',
+                {
+                    username: loginData.username,
+                    password: loginData.password,
                 },
-            });
+                function (data) {
+                    if (!data) {
+                        $('body').toast({
+                            class: 'error',
+                            message: `ユーザーIDまたはパスワードが間違っています。`,
+                        });
+                        return;
+                    }
 
+                    $('#btn_linkToNotification').attr('href', data);
+                    $('#btn_linkToNotification > button').removeClass('disabled');
+                }
+            );
 
-        }
-
-
-
-        /*****************
-         * Display utils
-         */
-
-        function DisplayUserInfo() {
-            $('#display_username').text(loginData.origin.name);
-            // $('#display_studentId').text(loginData.origin.gaksekiCd);
-
+            // Get unread notification count
+            AJAX(APIEndpoint.unreadNotificationCount, 'POST',
+                {
+                    username: loginData.username,
+                    password: loginData.password,
+                },
+                function (data) {
+                    $('#display_unreadNotiCnt').html(`<span class="ui label" style="margin-right: 5px">${data}</span> 未読お知らせ`);
+                    if (data == 'err') {
+                        $('#display_unreadNotiCnt > span').addClass('red');
+                    }
+                    else if (data > 0) {
+                        $('#display_unreadNotiCnt > span').addClass('orange');
+                    }
+                }
+            );
         }
 
 
@@ -588,7 +697,6 @@
         }
 
         function MobileAddLectureList(lectureList) {
-
             let day = ['月曜日', '火曜日', '水曜日', '木曜日', '金曜日'];
             let lectureTime = {
                 1: {
@@ -637,7 +745,7 @@
                 for (const lecture of sorted[key]) {
                     let segment = '';
 
-                    segment += '<div class="ui segment">';
+                    segment += `<div class="ui segment" onclick="showSyllabus(${JSON.stringify(lecture).replace(/"/g, '\'')})">`;
                     segment += '<div class="ui two column grid middle aligned">';
                     segment += '<div class="row">';
 
@@ -689,6 +797,10 @@
 
                 for (let i = 1; i < cols.length; i++) {
                     cols[i].innerText = '';
+                    cols[i].setAttribute('style', '');
+                    cols[i].setAttribute('onmouseover', '');
+                    cols[i].setAttribute('onmouseout', '');
+                    cols[i].setAttribute('onclick', '');
                 }
             }
         }
@@ -713,15 +825,51 @@
                 // TODO: syuu cyuu kou gi
             }
             else {
-                $(`#PCTimeTable > tbody > tr:nth-child(${period}) > td:nth-child(${day + 1})`)
-                    .html(
-                        `<p style="margin: 0; font-weight: bold">${lectureName}</p>
+                let cell = $(`#PCTimeTable > tbody > tr:nth-child(${period}) > td:nth-child(${day + 1})`);
+
+                cell.html(
+                    `<p style="margin: 0; font-weight: bold">${lectureName}</p>
                         <p style="margin: 0; text-align: right; color: gray">${teacherName}</p>
                         <p style="margin: 0; text-align: right; color: gray">${lectureRoom}</p>
                         `);
+
+                cell.attr('style', 'cursor: pointer;');
+                cell.attr('onmouseover', `$(this).css('background-color', '#f5f5f5')`);
+                cell.attr('onmouseout', `$(this).css('background-color', '#ffffff')`);
+                cell.attr('onclick', `showSyllabus(${JSON.stringify(lecture)})`);
+
                 // <span class="ui label">${unreadNotification}</span>
             }
+        }
 
+
+        /*****************
+         * Runtime event call function
+         */
+        function showSyllabus(lecture) {
+
+            // $('#syllabusModal .center.aligned.content').html(
+            //     `<div class="ui segment" style="height: 100px">
+            //         <div class="ui active dimmer">
+            //             <div class="ui text loader">Loading</div>
+            //         </div>
+            //         <p></p>
+            //     </div>`
+            // )
+            // $('#syllabusModal').modal({
+            //     closable: false,
+            // }).modal('show');
+
+            AJAX(APIEndpoint.lectureSyllabus, 'POST',
+                {
+                    username: loginData.username,
+                    password: loginData.password,
+                    lecture: lecture
+                },
+                function (data) {
+                    window.open(data, '_blank').focus();
+                }
+            );
         }
 
 
@@ -730,6 +878,7 @@
          * Cookie utils
          */
         const COOKIE = {
+            // Return current cookie data as JSON
             ToJSON: function () {
                 let cookie = document.cookie;
                 let res = {};
@@ -752,6 +901,8 @@
                 document.cookie = `origin=${encodeURIComponent(JSON.stringify(origin))}; expires=${expires.toUTCString()}; path=/;`;
             },
 
+            // Renew cookie expiration. 
+            // will be called every time user login.
             UpdateExpires: function () {
                 let expires = new Date();
                 expires.setTime(expires.getTime() + (10 * 24 * 60 * 60 * 1000));

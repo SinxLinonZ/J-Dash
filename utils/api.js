@@ -51,7 +51,7 @@ module.exports = {
         });
     },
 
-    Login: async function(username, password) {
+    GetLoginData: async function(username, password) {
         let res = await this.POST(process.env.ENDPOINT, process.env.API_LOGIN,
             {
                 'data':{
@@ -79,8 +79,8 @@ module.exports = {
         return res.data;
     },
 
-    LoginURI: async function(username, password) {
-        const data = await this.Login(username, password);
+    GetLoginDataURI: async function(username, password) {
+        const data = await this.GetLoginData(username, password);
 
         if (!data) {
             return false;
@@ -89,44 +89,6 @@ module.exports = {
         data.encryptedPassword = encodeURIComponent(data.encryptedPassword);
         return data;
     },
-
-    // GetEncryptedPasswordPure: async function(username, password) {
-    //     let res = await this.POST(process.env.ENDPOINT, process.env.API_LOGIN,
-    //         {
-    //             'data':{
-    //                 'encryptedLoginPassword': null,
-    //                 'judgeLoginPossibleFlg': false,
-    //                 'loginUserId': username,
-    //                 'plainLoginPassword': password,
-    //             },
-    //             'encryptedLoginPassword': password,
-    //             'langCd': '',
-    //             'loginUserId': username,
-    //             'plainLoginPassword': null,
-    //             'productCd': 'ap',
-    //             'subProductCd': 'apa',
-    //         });
-
-    //     if (!res.success) {
-    //         return false;
-    //     }
-
-    //     res = res.data;
-    //     res = decodeURIComponent(res);
-    //     res = JSON.parse(res);
-
-    //     return res.data.encryptedPassword;
-    // },
-
-    // GetEncryptedPasswordURI: async function(username, password) {
-    //     const enPass = await this.GetEncryptedPasswordPure(username, password);
-
-    //     if (!enPass) {
-    //         return false;
-    //     }
-
-    //     return encodeURIComponent(enPass);
-    // },
 
     GetSchedule: async function(username, encryptedPassword, semester = 0, term = 0) {
         let res = await this.POST(process.env.ENDPOINT, process.env.API_SCHEDULE,
@@ -191,7 +153,7 @@ module.exports = {
     },
 
     GetHomeUrl: async function(username, password) {
-        let url = process.env.ENDPOINT + process.env.API_HOME;
+        let url = process.env.ENDPOINT + process.env.API_WEBACCESS;
 
         let query = {
             'encryptedPassword': decodeURIComponent(password),
@@ -224,12 +186,17 @@ module.exports = {
         });
         await page.locator('.ui-link:has-text("出席登録(スマートフォン)")').click();
 
-        const inputs = page.locator('div.mainContent input');
+        await page.waitForNavigation();
+        if (await page.locator('label:has-text("出席確認終了")').count() > 0) {
+            const screenshot = (await page.screenshot()).toString('base64');
+            await browser.close();
+            return screenshot;
+        }
 
+        const inputs = page.locator('div.mainContent input');
         for (let i = 0; i < 4; i++) {
             await inputs.nth(i).fill(code[i]);
         }
-
         await page.locator('button:has-text("出席登録する")').click();
 
         await page.waitForNavigation();
@@ -237,6 +204,66 @@ module.exports = {
 
         await browser.close();
         return screenshot;
+    },
+
+    GetLectureSyllabusUrl: async function(username, password, lecture) {
+        let url = process.env.ENDPOINT + process.env.API_WEBACCESS;
+
+        let query = {
+            'encryptedPassword': decodeURIComponent(password),
+            'formId': 'Pkx52301',
+            'funcId': 'Pkx523',
+            'paramaterMap': {
+                'jugyoCd': lecture.jugyoCd,
+                'nendo': lecture.nendo,
+            },
+            'password': null,
+            'userId': username,
+        };
+        query = JSON.stringify(query);
+        query = encodeURIComponent(query);
+
+        url += '?webApiLoginInfo=' + query;
+        return url;
+    },
+
+    GetNotificationUrl: async function(username, password) {
+        let url = process.env.ENDPOINT + process.env.API_WEBACCESS;
+
+        let query = {
+            'encryptedPassword': decodeURIComponent(password),
+            'formId': 'Bsd50701',
+            'funcId': 'Bsd507',
+            'paramaterMap': null,
+            'password': null,
+            'userId': username,
+        };
+
+        query = JSON.stringify(query);
+        query = encodeURIComponent(query);
+
+        url += '?webApiLoginInfo=' + query;
+        return url;
+    },
+
+    GetUnreadNotificationCount: async function(username, password) {
+        const url = await this.GetHomeUrl(username, password);
+        const browser = await chromium.launch({
+            headless: true,
+        });
+        const page = await browser.newPage();
+        await page.goto(url);
+
+        await page.waitForLoadState('networkidle');
+        try {
+            const count = await page.locator('span.noticeCount').first().innerText();
+            await browser.close();
+            return count;
+        }
+        catch (error) {
+            await browser.close();
+            return 'err';
+        }
     },
 };
 
