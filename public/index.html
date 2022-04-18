@@ -15,60 +15,29 @@
     <!-- Fomantic UI -->
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.8/dist/semantic.min.css">
     <script src="https://cdn.jsdelivr.net/npm/fomantic-ui@2.8.8/dist/semantic.min.js"></script>
+
+    <!-- Google fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Noto+Sans&family=Noto+Sans+JP&family=Noto+Sans+SC&family=Noto+Sans+TC&display=swap"
+        rel="stylesheet">
 </head>
 
 <body>
 
-
-    <!-- <div class="ui sidebar left overlay visible" id="sidebar"></div>
-    <div class="pusher"></div> -->
-
-    <!-- <div class="ui vertical inverted left visible sidebar menu">
-        <a class="item">
-            <i class="home icon"></i>
-            Home
-        </a>
-        <a class="item">
-            <i class="block layout icon"></i>
-            Topics
-        </a>
-    </div>
-    <div class="pusher">
-
-        aaa
-
-
-    </div> -->
-
-    <!-- <style>
-        @media only screen and (max-width: 767px) {
-
-            [class*="mobile hidden"],
-            [class*="tablet only"]:not(.mobile),
-            [class*="computer only"]:not(.mobile),
-            [class*="large monitor only"]:not(.mobile),
-            [class*="widescreen monitor only"]:not(.mobile),
-            [class*="or lower hidden"] {
-                display: none !important;
-            }
-        }
-
-        @media only screen and (min-width: 768px) {
-
-            [class*="mobile only"]:not(.tablet),
-            [class*="mobile only"]:not(.tablet),
-            [class*="mobile only"]:not(.tablet),
-            [class*="mobile only"]:not(.tablet) {
-                display: none !important;
-            }
-        }
-    </style> -->
-
     <!-- 
         TODO: 
-            出席コード入力
             Bus timetable
+            Open API (documentation)
      -->
+
+
+    <style>
+        * {
+            font-family: 'Noto Sans JP', 'Noto Sans', 'Noto Sans TC', 'Noto Sans SC', sans-serif !important;
+        }
+    </style>
 
     <style>
         input::-webkit-outer-spin-button,
@@ -87,9 +56,8 @@
         <a class="item">
             <img class="ui mini image" src="./img/logo.png">
         </a>
-        <a class="item">AAA</a>
-        <a class="item">BBB</a>
-        <a class="item">CCC</a>
+        <a class="item" onclick="$('#disclaimerModal').modal('show')">Disclaimer</a>
+        <a class="item" onclick="$('#tosModal').modal('show')">ToS</a>
     </div>
 
     <div id="mainContent" class="ui container" style="padding-top: 1em;">
@@ -118,8 +86,9 @@
                                 さん！
                             </p>
 
-                            <div style="font-size: 1.2em; display: flex; align-items: center; margin: 5px 0" id="display_unreadNotiCnt">
-                                <div class="ui active inline loader"></div>
+                            <div style="font-size: 1.2em; display: flex; align-items: center; margin: 5px 0"
+                                id="display_unreadNotiCnt">
+                                <div class="ui active inline small loader"></div>
                             </div>
 
                             <p style="text-align: right;">
@@ -155,6 +124,7 @@
                                         <div class="ten wide column">
                                             <div class="field">
                                                 <input id="input_attendCode" type="number" placeholder="出席コード"
+                                                    pattern="[0-9]*" inputmode="numeric"
                                                     oninput="javascript:if(this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);"
                                                     maxlength="4">
                                             </div>
@@ -199,7 +169,15 @@
             <!-- Computer section -->
             <!-- Time table -->
             <div class="row computer only">
-                <table id="PCTimeTable" class="ui definition table celled fixed">
+
+                <div class="left ui rail very close" style="text-align: right;">
+                    <button id="btn_changeTableMode" class="ui icon button" data-tooltip="時間割表の表示切り替え" data-inverted="">
+                        <i class="retweet icon" style="font-family: Icons !important;"></i>
+                    </button>
+                </div>
+
+
+                <table id="PCTimeTable" class="ui definition table celled fixed" style="margin: 0;">
                     <thead>
                         <tr class="center aligned">
                             <th style="width: 5%"></th>
@@ -264,7 +242,7 @@
 
 
         <div class="ui section divider" style="margin-bottom: 1em;"></div>
-        <p style="padding-bottom: 2em; text-align: right;">Powered by NetTech / NSS</p>
+        <p style="padding-bottom: 2em; text-align: right;">Powered by NetTech / NSS (J19478)</p>
     </div>
 
 
@@ -285,6 +263,264 @@
     -->
 
 
+    <!-- Disclaimer -->
+    <div id="disclaimerModal" class="ui modal">
+        <div class="center aligned header">免責事項 / Disclaimer / 免责声明</div>
+
+        <div class="content">
+            <div class="ui pointing secondary menu">
+                <a class="item active" data-tab="disclaimer-japanese">日本語</a>
+                <a class="item" data-tab="disclaimer-english">English</a>
+                <a class="item" data-tab="disclaimer-sc">中文（繁体）</a>
+                <a class="item" data-tab="disclaimer-tc">中文（简体）</a>
+            </div>
+
+            <div class="ui tab active" data-tab="disclaimer-japanese">
+                <p>
+                    本アプリケーションは、利用者のアカウント、パスワードの請求を行いますが、<br>
+                    それを含むすべての個人情報を記録、保存しておりません。<br>
+                    万が一、パスワードなどが漏洩した場合、<br>
+                    本アプリケーション、本アプリケーション製作者としては責任を負いかねます。
+                    <br><br>
+                    本アプリケーションは原則上、ＵＮＩＶＥＲＳＡＬ　ＰＡＳＳＰＯＲＴであるシステムに向き稼働しますが、<br>
+                    １００％稼働することは保証しません。
+                    <br><br>
+                    本アプリケーションは学習、知識共有を目的として開発され、<br>
+                    ＵＮＩＶＥＲＳＡＬ　ＰＡＳＳＰＯＲＴシステムについてのＡＰＩ　ＥｎｔｒｙＰｏｉｎｔの利用によったトラブルは、<br>
+                    本アプリケーション、本アプリケーション製作者としては責任を負いかねます。
+                    <br><br>
+                    出席、シラバス照会など多数の機能については、利用者の代わりにＵＮＩＶＥＲＳＡＬ　ＰＡＳＳＰＯＲＴ<br>
+                    を操作することによって実現されていますが、本アプリケーションで表示されたデーターの正確性に保証しません。<br>
+                    本アプリケーションの利用によった出席漏れ、シラバスズレなどのトラブルは、<br>
+                    本アプリケーション、本アプリケーション製作者としては責任を負いかねます。<br>
+                    ご利用の上、十分にＵＮＩＶＥＲＳＡＬ　ＰＡＳＳＰＯＲＴの方にご自身でご確認お願いいたします。
+                    <br><br>
+                    想定外原因によって、本アプリケーションは随時提供終了する場合があります。<br>
+                    すべてのデーターはＵＮＩＶＥＲＳＡＬ　ＰＡＳＳＰＯＲＴ側に所有しています。
+                    <br><br>
+                    以上のことを十分ご承知した上に、本アプリケーションのご利用をお願い致します。
+                </p>
+            </div>
+
+            <div class="ui tab" data-tab="disclaimer-english">
+                <p>
+                    This application requests the user's account and password, <br>
+                    but does not record or store all personalinformation including it.<br>
+                    In the unlikely event that the password is leaked, <br>
+                    this application and the creator of this application cannot be held responsible.
+                    <br><br>
+                    In principle, this application works for systems that are UNIVERSAL PASSPORT,<br>
+                    but we do not guarantee that it will work 100%.
+                    <br><br>
+                    This application was developed for the purpose of learning and knowledge sharing, <br>
+                    and the creator of this application and this application cannot be held responsible <br>
+                    for any troubles caused by using API EntryPoint for the UNIVERSAL PASSPORT system.
+                    <br><br>
+                    Many functions such as attendance and syllabus inquiry are realized by operating UNIVERSAL
+                    PASSPORT<br>
+                    on behalf of the user, but the accuracy of the data displayed by this application is not
+                    guaranteed.<br>
+                    The application and the creator of this application cannot be held responsible for any troubles
+                    such<br>
+                    as omission of attendance or syllabus deviation due to the use of this application.<br>
+                    After using it, please check with the UNIVERSAL PASSPORT by yourself.
+                    <br><br>
+                    This application may be discontinued at any time due to unexpected causes.<br>
+                    All data is owned by UNIVERSAL PASSPORT.
+                    <br><br>
+                    Please be aware of the above before using this application.
+                </p>
+            </div>
+
+            <div class="ui tab" data-tab="disclaimer-sc">
+                <p>
+                    此應用程式要求用戶提供帳戶和密碼，但不會記錄或存儲包括它在內的所有個人信息。<br>
+                    萬一密碼泄露，本應用及本應用創建者概不負責。
+                    <br><br>
+                    原則上，此應用程式適用於 UNIVERSAL PASSPORT 系統，但我們不保證它會 100% 運行。
+                    <br><br>
+                    本應用程式是為學習和知識共享而開發的，本應用程式的創建者和本應用程式對因使用<br>
+                    UNIVERSAL PASSPORT 的 API EntryPoint 造成的任何問題概不負責。
+                    <br><br>
+                    通過代用戶操作UNIVERSAL PASSPORT實現考勤、考綱查詢等多項功能，<br>
+                    但不對本應用所顯示數據的準確性作保證。<br>
+                    對於因使用本應用程式而導致的缺勤或課程偏離等任何問題，<br>
+                    應用程式和本應用程式的創建者概不負責。
+                    請自行核對UNIVERSAL PASSPORT內容。
+                    <br><br>
+                    由於任何不可預料的原因，此應用程式可能隨時終止。<br>
+                    所有數據均歸 UNIVERSAL PASSPORT 所有。
+                    <br><br>
+                    請在使用此應用程式之前明確上述事項。
+                </p>
+            </div>
+
+            <div class="ui tab" data-tab="disclaimer-tc">
+                <p>
+                    此应用程序要求用户提供帐户和密码，但不会记录或存储包括它在内的所有个人信息。<br>
+                    万一密码泄露，本应用及本应用创建者概不负责。
+                    <br><br>
+                    原则上，此应用程序适用于 UNIVERSAL PASSPORT 系统，但我们不保证它会 100% 运行。
+                    <br><br>
+                    本应用程序是为学习和知识共享而开发的，本应用程序的创建者和本应用程序对因使用<br>
+                    UNIVERSAL PASSPORT 的 API EntryPoint 造成的任何问题概不负责。
+                    <br><br>
+                    通过代用户操作UNIVERSAL PASSPORT实现考勤、考纲查询等多项功能，<br>
+                    但不对本应用所显示数据的准确性作保证。<br>
+                    对于因使用本应用程序而导致的缺勤或课程偏离等任何问题，<br>
+                    应用程序和本应用程序的创建者概不负责。<br>
+                    请自行核对UNIVERSAL PASSPORT内容。
+                    <br><br>
+                    由于任何不可预料的原因，此应用程序可能随时终止。<br>
+                    所有数据均归 UNIVERSAL PASSPORT 所有。
+                    <br><br>
+                    请在使用此应用程序之前明确上述事项。
+                </p>
+            </div>
+
+        </div>
+
+        <div class="center aligned actions">
+            <div class="ui positive button"
+                onclick="if (!loginData) {$('#loginModal').modal({ closable: false }).modal('show');}">OK</div>
+        </div>
+    </div>
+
+    <!-- Terms of service -->
+    <div id="tosModal" class="ui modal">
+        <div class="center aligned header">利用規約 / Terms of service / 服务条款</div>
+
+        <div class="content">
+            <div class="ui pointing secondary menu">
+                <a class="item active" data-tab="ToS-japanese">日本語</a>
+                <a class="item" data-tab="ToS-english">English</a>
+                <a class="item" data-tab="ToS-sc">中文（繁体）</a>
+                <a class="item" data-tab="ToS-tc">中文（简体）</a>
+            </div>
+
+            <div class="ui tab active" data-tab="ToS-japanese">
+                <p>
+                    本アプリケーションは、個人で制作した上、個人のサーバーにホストしています。<br>
+                    サーバー貧弱のため、アクセス量によって一時的な通信障害が発生する場合があります。
+                    <br><br>
+                    本アプリケーションは、東京情報大学J-Portのアカウントを利用してご利用できますが、<br>
+                    すべての教育システムデーターは東京情報大学J-Portに保存されています。<br>
+                    このアプリケーションのサーバーにの保存は一切行っていません。
+                    <br><br>
+                    本アプリケーションを利用する際、アカウントとパスワードの請求は初回のみになりまして、<br>
+                    その情報を含むすべての利用者情報は本アプリケーションのサーバーに一切保存、記録していないことを保証します。<br>
+                    （ただし１、Cookieを利用しているため、本アプリケーションの最終利用時間から１０日超過した場合、<br>
+                    Cookieの期限が切れてしまい、再び請求する場合があります。）<br>
+                    （ただし２、不正利用、侵入などを防ぐため、個人情報を除いたアクセスログについては残させていただきます。<br>
+                    アプリケーションが必要としている利用者データーはすべてCookieの形式で利用者側端末にて保存されています。<br>
+                    個人データーについての不安があれば、本アプリケーションのソースコードは以下のリポジトリで閲覧できます。<br>
+                    それでも不安の方のご利用は、ご遠慮させていただきます。<br>
+                    GitHub: 準備中
+                    <br><br>
+                    また、アプリケーションについての意見、修正、障害などは、メールなどではなく、GitHubのIssueでお願いいたします。<br>
+                    <br><br>
+                    個人で開発、管理を行っているため、ページのレイアウトや機能などの変動が随時発生する場合があります。<br>
+                    <br><br>
+                    以上のことを十分ご承知した上に、本アプリケーションのご利用をお願い致します。
+                </p>
+            </div>
+
+            <div class="ui tab" data-tab="ToS-english">
+                <p>
+                    This application was created by an individual and hosted on an individual server.<br>
+                    Due to the poor server, a temporary communication failure may occur <br>
+                    depending on the amount of access.
+                    <br><br>
+                    This application can be used using the account of <br>
+                    Tokyo University of Information Sciences J-Port, but all educational system data is <br>
+                    stored in Tokyo University of Information Sciences J-Port. <br>
+                    This application has not been saved to the server at all.
+                    <br><br>
+                    When using this application, we guarantee that the account and password <br>
+                    will be requested only for the first time, and that all user information including <br>
+                    that information is not stored or recorded on the server of this application.<br>
+                    (However, because we use cookies, if you exceed the last usage time of this application<br>
+                    for 10 days, the cookie will expire and you may be billed again.)<br>
+                    (However, in order to prevent unauthorized use and intrusion, <br>
+                    we will keep the access log excluding personal information.)<br>
+                    All user data required by the application is stored in the user's terminal <br>
+                    in the form of a cookie.<br>
+                    If you have any concerns about personal data, you can browse the source code <br>
+                    of this application in the following repository.<br>
+                    If you still have any concerns after reading the source code, <br>
+                    using this application is not recommanded.
+                    GitHub: Coming soon
+                    <br><br>
+                    Also, if you have any opinions, corrections, or problems with the application, please use the GitHub
+                    Issue, not email.
+                    <br><br>
+                    Since it is developed and managed by an individual, changes in page layout and functions may occur
+                    at any time.
+                    <br><br>
+                    Please be aware of the above before using this application.
+                </p>
+            </div>
+
+            <div class="ui tab" data-tab="ToS-sc">
+                <p>
+                    此應用程式由個人​​創建並托管在個人服務器上。<br>
+                    由於服務器較差，根據訪問量的不同，可能會出現暫時的通訊問題。
+                    <br><br>
+                    可以使用東京情報大學 J-Port 的帳戶登入此應用程式。<br>
+                    所有教育系統數據都存儲在東京情報大學 J-Port 中。此應用程式不保存任何信息至服務器。<br>
+                    在使用本應用程式時，我們保證僅在初次使用時請求帳戶和密碼，<br>
+                    並且包括該信息在內的所有用戶信息不會存儲或記錄在本應用程式的服務器上。<br>
+                    （但是，因為我們使用cookies，如果您超過本應用程式的最後使用時間10天，<br>
+                    cookie將過期，您可能會再次請求賬戶和密碼。）<br>
+                    （但是，為了防止未經授權的使用和入侵，我們將保留不包括個人信息的訪問日志。）<br>
+                    應用程式所需的所有用戶數據都以 cookie 的形式存儲在用戶終端中。<br>
+                    如果您對個人數據有任何疑慮，可以在以下存儲庫中瀏覽此應用程式的源代碼。<br>
+                    即便瀏覽源代碼後依然對個人數據有任何疑慮，我們則不推薦您使用本應用程式。<br>
+                    GitHub：即將上綫
+                    <br><br>
+                    此外，如果您對應用程式有任何意見、更正或問題，請使用 GitHub Issue，而不是電子郵件。
+                    <br><br>
+                    由於它是由個人開發和管理的，因此頁面布局和功能可能隨時發生變化。
+                    <br><br>
+                    請在使用此應用程式之前明確上述事項。
+                </p>
+            </div>
+
+            <div class="ui tab" data-tab="ToS-tc">
+                <p>
+                    此应用程序由个人​​创建并托管在个人服务器上。<br>
+                    由于服务器较差，根据访问量的不同，可能会出现暂时的通讯问题。
+                    <br><br>
+                    可以使用东京情报大学 J-Port 的帐户登入此应用程序。<br>
+                    所有教育系统数据都存储在东京情报大学 J-Port 中。此应用程序不保存任何信息至服务器。<br>
+                    在使用本应用程序时，我们保证仅在初次使用时请求帐户和密码，<br>
+                    并且包括该信息在内的所有用户信息不会存储或记录在本应用程序的服务器上。<br>
+                    （但是，因为我们使用cookies，如果您超过本应用程序的最后使用时间10天，cookie将过期，<br>
+                    您可能会再次请求账户和密码。）<br>
+                    （但是，为了防止未经授权的使用和入侵，我们将保留不包括个人信息的访问日志。）<br>
+                    应用程序所需的所有用户数据都以 cookie 的形式存储在用户终端中。<br>
+                    如果您对个人数据有任何疑虑，可以在以下存储库中浏览此应用程序的源代码。<br>
+                    即便浏览源代码后依然对个人数据有任何疑虑，我们则不推荐您使用本应用程序。<br>
+                    GitHub：即将上线
+                    <br><br>
+                    此外，如果您对应用程序有任何意见、更正或问题，请使用 GitHub Issue，而不是电子邮件。
+                    <br><br>
+                    由于它是由个人开发和管理的，因此页面布局和功能可能随时发生变化。
+                    <br><br>
+                    请在使用此应用程序之前明确上述事项。
+                </p>
+            </div>
+
+        </div>
+
+        <div class="center aligned actions">
+            <div class="ui positive button"
+                onclick="if (!loginData) {$('#disclaimerModal').modal({ closable: false }).modal('show');}">OK</div>
+        </div>
+    </div>
+    <script>$('.menu .item').tab()</script>
+
+
     <!-- Attend screenshot modal -->
     <div id="attendResult" class="ui modal">
         <div class="center aligned header">出席結果</div>
@@ -302,6 +538,7 @@
     <!-- First use login modal -->
     <div id="loginModal" class="ui modal">
         <div class="center aligned header">初回登録</div>
+
 
         <div class="center aligned content">
             <div class="ui grid centered">
@@ -322,6 +559,8 @@
                 </div>
             </div>
 
+            <br>
+            <span style="color: rgb(170, 170, 170);">＊ログイン情報はローカルにて保存されています</span>
         </div>
 
         <!--         
@@ -330,7 +569,6 @@
             <div class="ui positive button">OK</div>
         </div>
         -->
-
     </div>
 
 
@@ -369,7 +607,7 @@
             // only allowed number digit input
             $('#input_attendCode').on('keydown', function (e) {
                 // only number 0-9, enter and backspace allowed
-                if ((e.keyCode < 48 || e.keyCode > 57) && e.keyCode !== 8 && e.keyCode !== 13) {
+                if ((e.keyCode < 48 || e.keyCode > 57) && (e.keyCode < 96 && e.keyCode > 105) && e.keyCode !== 8 && e.keyCode !== 13) {
                     e.preventDefault();
                 }
             });
@@ -479,7 +717,7 @@
                             return;
                         }
 
-                        COOKIE.SetLoginData(username, data.encryptedPassword, data);
+                        COOKIE.SetUserData(username, data.encryptedPassword, data);
                         $('#loginModal').modal('hide');
                         Init();
                     },
@@ -492,7 +730,8 @@
                 );
             });
 
-
+            // Button to change table display mode
+            $('#btn_changeTableMode').click(PCInvertTableDisplay);
 
 
 
@@ -503,10 +742,12 @@
 
             // First use
             if (cookie.indexOf("username=") == -1 || cookie.indexOf("password=") == -1 || cookie.indexOf("origin=") == -1) {
+
+                $('#tosModal').modal({ closable: false }).modal('show');
+                // $('#disclaimerModal').modal({ closable: false }).modal('show');
+
                 // Show login modal
-                $('#loginModal')
-                    .modal({ closable: false })
-                    .modal('show');
+                // $('#loginModal').modal({ closable: false }).modal('show');
             }
 
             // parse login data from cache
@@ -616,6 +857,9 @@
                     setPCTimetableTitle(data.term + '<br>' + data.termDisplayName);
                     clearPCTimetable();
                     PCAddLectureList(data.schedule);
+                    if (loginData.settings.pcTimetableInverted) {
+                        PCInvertTableDisplay();
+                    }
 
                     setMobileTimetableTitle(data.term + ' / ' + data.termDisplayName);
                     clearMobileTimetable();
@@ -668,7 +912,7 @@
                     password: loginData.password,
                 },
                 function (data) {
-                    $('#display_unreadNotiCnt').html(`<span class="ui label" style="margin-right: 5px">${data}</span> 未読お知らせ`);
+                    $('#display_unreadNotiCnt').html(`<span class="ui label" style="margin-right: 5px">${data}</span>未読お知らせ`);
                     if (data == 'err') {
                         $('#display_unreadNotiCnt > span').addClass('red');
                     }
@@ -825,7 +1069,7 @@
                 // TODO: syuu cyuu kou gi
             }
             else {
-                let cell = $(`#PCTimeTable > tbody > tr:nth-child(${period}) > td:nth-child(${day + 1})`);
+                let cell = $(`#PCTimeTable > tbody > tr:nth-child(${day}) > td:nth-child(${period + 1})`);
 
                 cell.html(
                     `<p style="margin: 0; font-weight: bold">${lectureName}</p>
@@ -838,10 +1082,51 @@
                 cell.attr('onmouseout', `$(this).css('background-color', '#ffffff')`);
                 cell.attr('onclick', `showSyllabus(${JSON.stringify(lecture)})`);
 
+                // Get lecture status
+                // AJAX(APIEndpoint.lectureStatus, 'POST',
+                //     {
+                //         username: loginData.username,
+                //         password: loginData.password,
+                //         lecture, lecture
+                //     },
+                //     function (data) {
+                //         cell.append(``);
+                //     }
+                // )
+
                 // <span class="ui label">${unreadNotification}</span>
             }
         }
 
+        function PCInvertTableDisplay() {
+            // swap title
+            for (let i = 1; i <= 5; i++) {
+                let titleRol = $(`#PCTimeTable > thead > tr:nth-child(1) > th:nth-child(${i + 1})`);
+                let titleCol = $(`#PCTimeTable > tbody > tr:nth-child(${i}) > td:nth-child(1)`);
+                let tmp = titleRol.html();
+                titleRol.html(titleCol.html());
+                titleCol.html(tmp);
+            }
+
+            // change width
+            if ($(`#PCTimeTable > thead > tr:nth-child(1) > th:nth-child(2)`).text().indexOf('月') != -1) {
+                $(`#PCTimeTable > thead > tr > th:nth-child(1)`).css('width', '12%');
+                COOKIE.UpdateUserSettings('pcTimetableInverted', true);
+            } else {
+                $(`#PCTimeTable > thead > tr > th:nth-child(1)`).css('width', '5%');
+                COOKIE.UpdateUserSettings('pcTimetableInverted', false);
+            }
+
+            for (let r = 1; r < 5; r++) {
+                for (let i = r; i < 5; i++) {
+                    let cell1 = $(`#PCTimeTable > tbody > tr:nth-child(${r}) > td:nth-child(${i + 2})`);
+                    let cell2 = $(`#PCTimeTable > tbody > tr:nth-child(${i + 1}) > td:nth-child(${r + 1})`);
+                    let tmp = cell1.prop('outerHTML');
+                    cell1.prop('outerHTML', cell2.prop('outerHTML'));
+                    cell2.prop('outerHTML', tmp);
+                }
+            }
+        }
 
         /*****************
          * Runtime event call function
@@ -889,16 +1174,19 @@
                 });
 
                 res.origin = JSON.parse(decodeURIComponent(res.origin));
+                res.settings = JSON.parse(decodeURIComponent(res.settings));
                 return res;
             },
 
-            SetLoginData: function (username, password, origin) {
+            SetUserData: function (username, password, origin) {
                 let expires = new Date();
                 expires.setTime(expires.getTime() + (10 * 24 * 60 * 60 * 1000));
 
                 document.cookie = `username=${username}; expires=${expires.toUTCString()}; path=/;`;
                 document.cookie = `password=${password}; expires=${expires.toUTCString()}; path=/;`;
                 document.cookie = `origin=${encodeURIComponent(JSON.stringify(origin))}; expires=${expires.toUTCString()}; path=/;`;
+
+                document.cookie = `settings=${encodeURIComponent(JSON.stringify({}))}; expires=${expires.toUTCString()}; path=/;`;
             },
 
             // Renew cookie expiration. 
@@ -911,6 +1199,16 @@
                 document.cookie = `username=${cookie.username}; expires=${expires.toUTCString()}; path=/;`;
                 document.cookie = `password=${cookie.password}; expires=${expires.toUTCString()}; path=/;`;
                 document.cookie = `origin=${encodeURIComponent(JSON.stringify(cookie.origin))}; expires=${expires.toUTCString()}; path=/;`;
+
+                document.cookie = `settings=${encodeURIComponent(JSON.stringify(cookie.settings))}; expires=${expires.toUTCString()}; path=/;`;
+            },
+
+            UpdateUserSettings: function (key, value) {
+                let cookie = COOKIE.ToJSON();
+                cookie.settings[key] = value;
+                document.cookie = `settings=${encodeURIComponent(JSON.stringify(cookie.settings))}; path=/;`;
+
+                loginData = this.ToJSON();
             },
         }
 

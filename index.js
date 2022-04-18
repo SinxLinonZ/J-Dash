@@ -1,4 +1,4 @@
-const api = require('./utils/api');
+const api = require('./backend/api');
 const express = require('express');
 
 const app = express();

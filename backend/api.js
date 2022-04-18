@@ -180,24 +180,38 @@ module.exports = {
         const page = await browser.newPage();
         await page.goto(url);
 
-        await page.evaluate(() => {
-            // eslint-disable-next-line no-undef
-            $('#menuPanel').panel('open');
-        });
-        await page.locator('.ui-link:has-text("出席登録(スマートフォン)")').click();
 
-        await page.waitForNavigation();
-        if (await page.locator('label:has-text("出席確認終了")').count() > 0) {
+        try {
+            await page.evaluate(() => {
+            // eslint-disable-next-line no-undef
+                $('#menuPanel').panel('open');
+            });
+            await page.locator('.ui-link:has-text("出席登録(スマートフォン)")').click();
+
+            await page.waitForNavigation();
+            if (await page.locator('label:has-text("出席確認終了")').count() > 0) {
+                const screenshot = (await page.screenshot()).toString('base64');
+                await browser.close();
+                return screenshot;
+            }
+
+            const inputs = page.locator('div.mainContent input');
+
+            for (let i = 0; i < 4; i++) {
+                await inputs.nth(i).fill(code[i], {
+                    timeout: 1000,
+                });
+            }
+
+            await page.locator('button:has-text("出席登録する")').click({
+                timeout: 1000,
+            });
+        }
+        catch (e) {
             const screenshot = (await page.screenshot()).toString('base64');
             await browser.close();
             return screenshot;
         }
-
-        const inputs = page.locator('div.mainContent input');
-        for (let i = 0; i < 4; i++) {
-            await inputs.nth(i).fill(code[i]);
-        }
-        await page.locator('button:has-text("出席登録する")').click();
 
         await page.waitForNavigation();
         const screenshot = (await page.screenshot()).toString('base64');
@@ -256,13 +270,16 @@ module.exports = {
 
         await page.waitForLoadState('networkidle');
         try {
-            const count = await page.locator('span.noticeCount').first().innerText();
+            const count = await page.locator('span.noticeCount').first();
+            const text = await count.innerText({
+                timeout: 1000,
+            });
             await browser.close();
-            return count;
+            return text;
         }
         catch (error) {
             await browser.close();
-            return 'err';
+            return '0';
         }
     },
 };

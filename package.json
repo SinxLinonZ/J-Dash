@@ -1,14 +1,14 @@
 {
-  "name": "j-port-api",
+  "name": "j-dash",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "run": "node index.js"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC",
+  "author": "SinxLinonZ",
+  "license": "GPL-3.0",
   "dependencies": {
     "axios": "^0.26.1",
     "dotenv": "^16.0.0",
