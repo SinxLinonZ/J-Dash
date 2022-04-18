@@ -93,7 +93,7 @@ If you have any concerns about personal data, you can browse the source code
 of this application in the following repository.
 If you still have any concerns after reading the source code, 
 using this application is not recommanded.
-GitHub: Coming soon
+GitHub: https://github.com/SinxLinonZ/J-Dash
 
 Also, if you have any opinions, corrections, or problems with the application, please use the GitHub
 Issue, not email.
