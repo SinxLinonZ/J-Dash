@@ -1,0 +1,31 @@
+This application was created by an individual and hosted on an individual server.
+Due to the poor server, a temporary communication failure may occur 
+depending on the amount of access.
+
+This application can be used using the account of 
+Tokyo University of Information Sciences J-Port, but all educational system data is 
+stored in Tokyo University of Information Sciences J-Port. 
+This application has not been saved to the server at all.
+
+When using this application, we guarantee that the account and password 
+will be requested only for the first time, and that all user information including 
+that information is not stored or recorded on the server of this application.
+(However, because we use cookies, if you exceed the last usage time of this application
+for 10 days, the cookie will expire and you may be billed again.)
+(However, in order to prevent unauthorized use and intrusion, 
+we will keep the access log excluding personal information.)
+All user data required by the application is stored in the user's terminal 
+in the form of a cookie.
+If you have any concerns about personal data, you can browse the source code 
+of this application in the following repository.
+If you still have any concerns after reading the source code, 
+using this application is not recommanded.
+GitHub: https://github.com/SinxLinonZ/J-Dash
+
+Also, if you have any opinions, corrections, or problems with the application, please use the GitHub
+Issue, not email.
+
+Since it is developed and managed by an individual, changes in page layout and functions may occur
+at any time.
+
+Please be aware of the above before using this application.

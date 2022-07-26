@@ -1,0 +1,3 @@
+Due to low performance of the server, 
+service could be unaccessable randomly.
+We apologize for any inconvenience.

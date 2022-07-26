@@ -1,0 +1,25 @@
+This application requests the user's account and password, 
+but does not record or store all personalinformation including it.
+In the unlikely event that the password is leaked, 
+this application and the creator of this application cannot be held responsible.
+
+In principle, this application works for systems that are UNIVERSAL PASSPORT,
+but we do not guarantee that it will work 100%.
+
+This application was developed for the purpose of learning and knowledge sharing, 
+and the creator of this application and this application cannot be held responsible 
+for any troubles caused by using API EntryPoint for the UNIVERSAL PASSPORT system.
+
+Many functions such as attendance and syllabus inquiry are realized by operating UNIVERSAL
+PASSPORT
+on behalf of the user, but the accuracy of the data displayed by this application is not
+guaranteed.
+The application and the creator of this application cannot be held responsible for any troubles
+such
+as omission of attendance or syllabus deviation due to the use of this application.
+After using it, please check with the UNIVERSAL PASSPORT by yourself.
+
+This application may be discontinued at any time due to unexpected causes.
+All data is owned by UNIVERSAL PASSPORT.
+
+Please be aware of the above before using this application.
