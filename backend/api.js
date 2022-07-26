@@ -214,6 +214,8 @@ module.exports = {
         }
 
         await page.waitForNavigation();
+        await page.mouse.click(1, 1);
+        // await page.waitForTimeout(500);
         const screenshot = (await page.screenshot()).toString('base64');
 
         await browser.close();
